@@ -1,0 +1,240 @@
+@import "tailwindcss";
+
+/* Folio House, night edition.
+   Concept: a gallery after hours. Warm black walls, work lit from within,
+   frosted-glass chrome that floats over it. Each discipline tints the room with its own glow.
+   Single deliberate dark look; every colour is set explicitly below. */
+:root {
+  --font-archivo: "Archivo Variable";
+  --font-plex-mono: "IBM Plex Mono";
+
+  --paper: #0b0b0c;          /* page */
+  --paper-2: #121214;        /* raised section */
+  --surface: rgba(255, 255, 255, 0.055);  /* glass fill */
+  --surface-strong: rgba(255, 255, 255, 0.09);
+  --raised: #18181b;
+  --ink: #f3f0ea;
+  --muted: #a39e94;
+  --faint: #6d6960;
+  --line: rgba(255, 255, 255, 0.1);
+  --line-strong: rgba(255, 255, 255, 0.18);
+  --accent: #e9cf9f;         /* champagne */
+  --accent-ink: #141210;
+  --accent-soft: rgba(233, 207, 159, 0.14);
+  --glow-1: #b4462f;
+  --glow-2: #2e4a6b;
+  --glow-3: #55663f;
+  --scrim: rgba(5, 5, 6, 0.6);
+  --shadow: 0 1px 1px rgba(0, 0, 0, 0.3), 0 24px 60px -24px rgba(0, 0, 0, 0.8);
+
+  --ease-out: cubic-bezier(0.23, 1, 0.32, 1);
+  --ease-in-out: cubic-bezier(0.77, 0, 0.175, 1);
+  --ease-drawer: cubic-bezier(0.32, 0.72, 0, 1);
+  --r: 18px;
+  --gutter: clamp(16px, 4vw, 48px);
+  color-scheme: dark;
+}
+
+@theme inline {
+  --color-paper: var(--paper);
+  --color-surface: var(--surface);
+  --color-ink: var(--ink);
+  --color-muted: var(--muted);
+  --color-line: var(--line);
+  --color-accent: var(--accent);
+  --font-display: var(--font-archivo), "Helvetica Neue", Arial, sans-serif;
+  --font-sans: var(--font-archivo), "Helvetica Neue", Arial, sans-serif;
+  --font-mono: var(--font-plex-mono), ui-monospace, Menlo, monospace;
+}
+
+@layer components {
+* { box-sizing: border-box; }
+html { -webkit-text-size-adjust: 100%; background: var(--paper); }
+html.lenis, html.lenis body { height: auto; }
+.lenis.lenis-smooth { scroll-behavior: auto !important; }
+body {
+  margin: 0;
+  background: var(--paper);
+  color: var(--ink);
+  font-family: var(--font-archivo), "Helvetica Neue", Arial, sans-serif;
+  font-size: 16px;
+  line-height: 1.55;
+  -webkit-font-smoothing: antialiased;
+  text-rendering: optimizeLegibility;
+  overflow-x: clip;
+}
+::selection { background: var(--accent); color: var(--accent-ink); }
+h1, h2, h3, h4 { margin: 0; text-wrap: balance; font-weight: 700; }
+p { margin: 0; text-wrap: pretty; }
+a { color: inherit; text-decoration: none; }
+img, svg, video { max-width: 100%; }
+:focus-visible { outline: 2px solid var(--accent); outline-offset: 3px; border-radius: 8px; }
+
+.wrap { max-width: 1400px; margin: 0 auto; padding-inline: var(--gutter); }
+.mono { font-family: var(--font-plex-mono), ui-monospace, monospace; font-size: 12px; letter-spacing: 0.02em; }
+.label { font-family: var(--font-plex-mono), ui-monospace, monospace; font-size: 11px; letter-spacing: 0.14em; text-transform: uppercase; color: var(--muted); }
+.muted { color: var(--muted); }
+.tnum { font-variant-numeric: tabular-nums; }
+
+/* Type. Archivo's width axis does the heavy lifting: wide for statements, condensed for counterpoint. */
+.display-xxl { font-stretch: 125%; font-weight: 760; font-size: clamp(48px, 9.4vw, 168px); line-height: 0.86; letter-spacing: -0.05em; }
+.display-xl { font-stretch: 122%; font-weight: 740; font-size: clamp(42px, 7vw, 116px); line-height: 0.9; letter-spacing: -0.045em; }
+.display-l { font-stretch: 118%; font-weight: 720; font-size: clamp(34px, 5vw, 72px); line-height: 0.95; letter-spacing: -0.04em; }
+.display-m { font-stretch: 115%; font-weight: 700; font-size: clamp(28px, 3.6vw, 52px); line-height: 1; letter-spacing: -0.035em; }
+.display-s { font-stretch: 110%; font-weight: 650; font-size: 22px; line-height: 1.15; letter-spacing: -0.02em; }
+.narrow { font-stretch: 62%; font-weight: 300; letter-spacing: -0.02em; }
+.lede { font-size: clamp(16px, 1.35vw, 19px); color: var(--muted); max-width: 54ch; line-height: 1.6; }
+.text-gradient {
+  background: linear-gradient(100deg, #f6e7c8 0%, #e9cf9f 30%, #c9a4ff 62%, #8fb3da 100%);
+  -webkit-background-clip: text; background-clip: text; color: transparent;
+}
+
+/* Glass. Fill + blur + a 1px highlight on the top edge so panels read as lit from above. */
+.glass {
+  background: linear-gradient(180deg, rgba(255,255,255,0.09), rgba(255,255,255,0.035));
+  backdrop-filter: blur(22px) saturate(1.6);
+  -webkit-backdrop-filter: blur(22px) saturate(1.6);
+  box-shadow: inset 0 1px 0 rgba(255,255,255,0.14), inset 0 0 0 1px rgba(255,255,255,0.08), 0 30px 60px -30px rgba(0,0,0,0.7);
+}
+.glass-strong {
+  background: linear-gradient(180deg, rgba(30,30,33,0.72), rgba(20,20,22,0.6));
+  backdrop-filter: blur(28px) saturate(1.7);
+  -webkit-backdrop-filter: blur(28px) saturate(1.7);
+  box-shadow: inset 0 1px 0 rgba(255,255,255,0.12), inset 0 0 0 1px rgba(255,255,255,0.08), 0 30px 80px -30px rgba(0,0,0,0.9);
+}
+@supports not ((backdrop-filter: blur(1px)) or (-webkit-backdrop-filter: blur(1px))) {
+  .glass, .glass-strong { background: rgba(24,24,27,0.94); }
+}
+
+/* Iridescent hairline border for the few things that should feel precious. */
+.iris { position: relative; isolation: isolate; }
+.iris::before {
+  content: ""; position: absolute; inset: 0; border-radius: inherit; padding: 1px; z-index: -1;
+  background: conic-gradient(from var(--iris-angle, 0deg), #e9cf9f, #c9a4ff, #8fb3da, #9dc79a, #f08a6e, #e9cf9f);
+  -webkit-mask: linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0);
+  -webkit-mask-composite: xor; mask-composite: exclude;
+  animation: iris-spin 6s linear infinite;
+}
+@property --iris-angle { syntax: "<angle>"; inherits: false; initial-value: 0deg; }
+@keyframes iris-spin { to { --iris-angle: 360deg; } }
+
+/* Buttons */
+.btn {
+  appearance: none; border: 0; cursor: pointer;
+  font: 600 15px/1 var(--font-archivo), sans-serif; font-stretch: 108%;
+  padding: 15px 22px; border-radius: 999px;
+  display: inline-flex; align-items: center; justify-content: center; gap: 10px; white-space: nowrap;
+  transition: transform 160ms var(--ease-out), background-color 200ms ease, color 200ms ease, box-shadow 200ms ease;
+}
+.btn:active { transform: scale(0.97); }
+.btn-primary { background: var(--ink); color: var(--paper); }
+.btn-accent { background: var(--accent); color: var(--accent-ink); }
+.btn-ghost { background: rgba(255,255,255,0.04); color: var(--ink); box-shadow: inset 0 0 0 1px var(--line-strong); backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px); }
+.btn-sm { padding: 11px 15px; font-size: 14px; }
+@media (hover: hover) and (pointer: fine) {
+  .btn-primary:hover { background: var(--accent); color: var(--accent-ink); }
+  .btn-ghost:hover { background: rgba(255,255,255,0.09); }
+  .btn .arrow { transition: transform 200ms var(--ease-out); }
+  .btn:hover .arrow { transform: translateX(3px); }
+}
+
+.chip {
+  appearance: none; cursor: pointer; border: 0;
+  font: 500 13px var(--font-archivo), sans-serif; padding: 8px 14px; border-radius: 999px;
+  background: rgba(255,255,255,0.04); color: var(--ink); box-shadow: inset 0 0 0 1px var(--line);
+  backdrop-filter: blur(10px); -webkit-backdrop-filter: blur(10px);
+  transition: transform 160ms var(--ease-out), box-shadow 200ms ease, background-color 200ms ease, color 200ms ease;
+  display: inline-flex; align-items: center; gap: 6px;
+}
+.chip:active { transform: scale(0.96); }
+.chip[aria-pressed="true"] { background: var(--ink); color: var(--paper); box-shadow: none; }
+@media (hover: hover) and (pointer: fine) { .chip:hover { box-shadow: inset 0 0 0 1px var(--line-strong); background: rgba(255,255,255,0.08); } }
+
+/* Media frames */
+.art-frame { display: block; border-radius: var(--r); overflow: hidden; background: var(--raised); box-shadow: inset 0 0 0 1px var(--line); position: relative; }
+.art-frame svg, .art-frame img { display: block; width: 100%; height: auto; }
+.art-fill svg, .art-fill img, .art-fill video { width: 100%; height: 100%; object-fit: cover; }
+.media-cover { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; }
+
+/* Fields */
+.field { display: grid; gap: 6px; min-width: 0; }
+.field label { font-family: var(--font-plex-mono), monospace; font-size: 11px; letter-spacing: 0.12em; text-transform: uppercase; color: var(--muted); }
+.field input, .field select, .field textarea {
+  font: 400 15px var(--font-archivo), sans-serif; color: var(--ink);
+  background: rgba(255,255,255,0.04); border: 1px solid var(--line); border-radius: 12px;
+  padding: 12px 13px; width: 100%; min-width: 0;
+  transition: border-color 200ms ease, box-shadow 200ms ease, background-color 200ms ease;
+}
+.field select option { background: #18181b; color: var(--ink); }
+.field textarea { resize: vertical; min-height: 110px; }
+.field input:focus, .field select:focus, .field textarea:focus { outline: none; border-color: var(--accent); box-shadow: 0 0 0 3px var(--accent-soft); background: rgba(255,255,255,0.06); }
+.field input::placeholder, .field textarea::placeholder { color: var(--faint); }
+
+.specs { margin: 0; display: grid; border-top: 1px solid var(--line); }
+.specs > div { display: grid; grid-template-columns: 130px minmax(0, 1fr); gap: 12px; padding: 12px 0; border-bottom: 1px solid var(--line); font-size: 15px; }
+.specs dt { font-family: var(--font-plex-mono), monospace; font-size: 11px; letter-spacing: 0.12em; text-transform: uppercase; color: var(--muted); padding-top: 3px; }
+.specs dd { margin: 0; }
+
+/* Clip-path tabs */
+.tabs { position: relative; display: inline-block; border-radius: 999px; }
+.tab-list { display: flex; gap: 2px; padding: 4px; margin: 0; list-style: none; }
+.tab-list button {
+  appearance: none; border: 0; background: transparent; cursor: pointer;
+  font: 500 14px var(--font-archivo), sans-serif; color: var(--muted);
+  padding: 9px 16px; border-radius: 999px; white-space: nowrap; font-variant-numeric: tabular-nums;
+}
+.tab-list button span { font-family: var(--font-plex-mono), monospace; font-size: 11px; opacity: 0.6; margin-left: 6px; }
+.tab-list.active-copy { position: absolute; inset: 0; pointer-events: none; transition: clip-path 280ms var(--ease-out); }
+.tab-list.active-copy button { color: var(--paper); background: var(--ink); }
+
+.noscroll { scrollbar-width: none; }
+.noscroll::-webkit-scrollbar { display: none; }
+
+/* Marquee: constant motion is linear. */
+@keyframes marquee { from { transform: translateX(0); } to { transform: translateX(-50%); } }
+.marquee-track { display: flex; width: max-content; animation: marquee 60s linear infinite; }
+.marquee-track.fast { animation-duration: 36s; }
+.marquee-track.reverse { animation-direction: reverse; }
+@media (hover: hover) and (pointer: fine) { .marquee:hover .marquee-track { animation-play-state: paused; } }
+.outline-text { color: transparent; -webkit-text-stroke: 1px rgba(243, 240, 234, 0.35); }
+
+.work-hit { transition: transform 160ms var(--ease-out); }
+.work-hit:active { transform: scale(0.985); }
+.work-hit .art-inner, .work-hit .photo { transition: transform 700ms var(--ease-out), filter 500ms ease; }
+@media (hover: hover) and (pointer: fine) { .work-hit:hover .art-inner, .work-hit:hover .photo { transform: scale(1.045); } }
+
+.ulink { background-image: linear-gradient(currentColor, currentColor); background-size: 0% 1px; background-repeat: no-repeat; background-position: 0 100%; transition: background-size 260ms var(--ease-out); }
+@media (hover: hover) and (pointer: fine) { .ulink:hover { background-size: 100% 1px; } }
+
+/* Film grain over everything; static, so it costs nothing. */
+.grain {
+  pointer-events: none; position: fixed; inset: 0; z-index: 60; opacity: 0.07; mix-blend-mode: overlay;
+  background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='220' height='220'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='.85' numOctaves='3' stitchTiles='stitch'/><feColorMatrix values='0 0 0 0 1  0 0 0 0 1  0 0 0 0 1  0 0 0 .9 0'/></filter><rect width='100%' height='100%' filter='url(%23n)'/></svg>");
+}
+
+/* Ambient glows: three blurred orbs drifting slowly. Transform-only, so it stays on the GPU. */
+.aurora { pointer-events: none; position: fixed; inset: -20vmax; z-index: 0; overflow: hidden; }
+.aurora span { position: absolute; width: 60vmax; height: 60vmax; border-radius: 50%; filter: blur(90px); opacity: 0.22; will-change: transform; }
+.aurora span:nth-child(1) { background: var(--glow-1); left: 5%; top: 0%; animation: drift1 26s ease-in-out infinite alternate; }
+.aurora span:nth-child(2) { background: var(--glow-2); right: 0%; top: 25%; animation: drift2 32s ease-in-out infinite alternate; }
+.aurora span:nth-child(3) { background: var(--glow-3); left: 30%; bottom: -10%; animation: drift3 28s ease-in-out infinite alternate; opacity: 0.16; }
+@keyframes drift1 { to { transform: translate(18vmax, 12vmax) scale(1.15); } }
+@keyframes drift2 { to { transform: translate(-16vmax, 14vmax) scale(0.9); } }
+@keyframes drift3 { to { transform: translate(10vmax, -16vmax) scale(1.1); } }
+
+/* Spotlight border that follows the pointer (set --mx/--my from JS). */
+.spot { position: relative; }
+.spot::after {
+  content: ""; position: absolute; inset: 0; border-radius: inherit; pointer-events: none; opacity: 0; transition: opacity 300ms ease;
+  background: radial-gradient(420px circle at var(--mx, 50%) var(--my, 50%), rgba(255,255,255,0.12), transparent 45%);
+}
+@media (hover: hover) and (pointer: fine) { .spot:hover::after { opacity: 1; } }
+}
+
+/* Discipline pages tint the glow and accent. */
+.disc-accent { --accent: var(--accent-d); --accent-ink: #111; --accent-soft: color-mix(in srgb, var(--accent-d) 18%, transparent); }
+
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after { transition-property: opacity, color, background-color, box-shadow, border-color !important; }
+  .marquee-track, .aurora span, .iris::before { animation: none !important; }
+}
